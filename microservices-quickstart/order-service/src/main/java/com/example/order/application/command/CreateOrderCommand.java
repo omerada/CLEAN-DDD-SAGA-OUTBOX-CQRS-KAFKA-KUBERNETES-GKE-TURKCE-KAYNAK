@@ -12,10 +12,9 @@ import java.util.List;
  * Contains all necessary data for order creation business logic.
  */
 public record CreateOrderCommand(
-    CustomerId customerId,
-    List<OrderItemCommand> items
-) {
-    
+        CustomerId customerId,
+        List<OrderItemCommand> items) {
+
     public CreateOrderCommand {
         if (customerId == null) {
             throw new IllegalArgumentException("Customer ID is required");
@@ -24,7 +23,7 @@ public record CreateOrderCommand(
             throw new IllegalArgumentException("Order items are required");
         }
     }
-    
+
     /**
      * Convert command items to domain entities
      */
