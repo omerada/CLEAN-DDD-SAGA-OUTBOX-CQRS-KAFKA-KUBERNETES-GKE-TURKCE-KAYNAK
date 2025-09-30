@@ -2,32 +2,32 @@
 
 ## 📋 Özet
 
-Bu bölümde Domain Driven Design strategic ve tactical patterns'ını e-ticaret domain'imizde derinlemesine uygulayarak, complex business logic'i organize etmeyi, bounded contexts tasarlamayı, aggregates oluşturmayı ve domain events ile coordination yapmayı öğreneceksiniz. Order, Inventory ve Payment context'lerini DDD principles ile modelleyeceğiz.
+Bu bölümde Domain Driven Design strategic ve tactical patterns'ını e-ticaret domain'imizde derinlemesine uygulayarak, karmaşık iş mantığını organize etmeyi, bounded context'leri tasarlamayı, aggregate'leri oluşturmayı ve domain event'ler ile koordinasyon yapmayı öğreneceksiniz. Order, Inventory ve Payment context'lerini DDD prensipleri ile modelleyeceğiz.
 
-## 🎯 Learning Objectives
+## 🎯 Öğrenme Hedefleri
 
 Bu bölüm sonunda şunları yapabileceksiniz:
 
-- ✅ **Strategic DDD** - Bounded contexts ve context mapping
-- ✅ **Tactical DDD** - Aggregates, entities, value objects
-- ✅ **Domain Events** - Event-driven coordination
-- ✅ **Ubiquitous Language** - Domain experts ile common terminology
-- ✅ **Anti-Corruption Layer** - Context boundaries protection
-- ✅ **Domain Services** - Complex business logic organization
-- ✅ **Repository Pattern** - Aggregate persistence abstraction
+- ✅ **Strategic DDD** - Bounded context'ler ve context mapping
+- ✅ **Tactical DDD** - Aggregate'ler, entity'ler, value object'ler
+- ✅ **Domain Events** - Event-driven koordinasyon
+- ✅ **Ubiquitous Language** - Domain uzmanları ile ortak terminoloji
+- ✅ **Anti-Corruption Layer** - Context sınırlarının korunması
+- ✅ **Domain Services** - Karmaşık iş mantığı organizasyonu
+- ✅ **Repository Pattern** - Aggregate persistence soyutlaması
 
-## 📋 Prerequisites
+## 📋 Ön Koşullar
 
 - ✅ Clean Architecture ve Hexagonal Architecture tamamlanmış (Bölüm 2-3)
-- ✅ Domain modeling temel bilgisi
-- ✅ Event-driven architecture concepts
-- ✅ Complex business rules handling experience
+- ✅ Domain modelleme temel bilgisi
+- ✅ Event-driven architecture kavramları
+- ✅ Karmaşık iş kuralları yönetimi deneyimi
 
 ---
 
-## 🎯 Strategic DDD - Context Design
+## 🎯 Strategic DDD - Context Tasarımı
 
-### Bounded Context Mapping
+### Bounded Context Haritalaması
 
 E-ticaret domain'imizde 3 ana bounded context belirledik:
 
@@ -102,18 +102,18 @@ graph TB
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### Ubiquitous Language
+### Ortak Dil (Ubiquitous Language)
 
-| Term             | Order Context                      | Inventory Context                          | Payment Context                        |
-| ---------------- | ---------------------------------- | ------------------------------------------ | -------------------------------------- |
-| **Reservation**  | "Order reserves items"             | "Stock allocation for specific order"      | "Authorization hold on payment method" |
-| **Confirmation** | "Order is confirmed after payment" | "Reservation becomes permanent allocation" | "Payment is captured/settled"          |
-| **Cancellation** | "Order is cancelled by customer"   | "Reserved stock is released"               | "Payment authorization is voided"      |
-| **Fulfillment**  | "Order is shipped/delivered"       | "Stock is physically removed"              | "Payment is finalized"                 |
+| Terim           | Order Context                             | Inventory Context                       | Payment Context                         |
+| --------------- | ----------------------------------------- | --------------------------------------- | --------------------------------------- |
+| **Rezervasyon** | "Sipariş ürünleri rezerve eder"           | "Belirli sipariş için stok tahsisi"     | "Ödeme yönteminde yetkilendirme tutucu" |
+| **Onay**        | "Sipariş ödemeden sonra onaylanır"        | "Rezervasyon kalıcı tahsis olur"        | "Ödeme yakalanır/takas edilir"          |
+| **İptal**       | "Sipariş müşteri tarafından iptal edilir" | "Rezerve edilen stok serbest bırakılır" | "Ödeme yetkilendirmesi iptal edilir"    |
+| **Karşılama**   | "Sipariş kargolanır/teslim edilir"        | "Stok fiziksel olarak çıkarılır"        | "Ödeme tamamlanır"                      |
 
 ---
 
-## 🏗️ Tactical DDD Implementation
+## 🏗️ Tactical DDD Uygulaması
 
 ### Order Bounded Context
 
@@ -132,12 +132,12 @@ import java.util.*;
 /**
  * Order Aggregate Root
  *
- * Business Rules:
- * - Order must have at least one item
- * - Total amount must match sum of item prices
- * - Status transitions follow business rules
- * - Order can only be modified in PENDING status
- * - Cancellation policies apply based on status
+ * İş Kuralları:
+ * - Sipariş en az bir ürün içermelidir
+ * - Toplam tutar ürün fiyatlarının toplamına eşit olmalıdır
+ * - Durum geçişleri iş kurallarını takip etmelidir
+ * - Sipariş sadece PENDING durumunda değiştirilebilir
+ * - İptal politikaları duruma göre uygulanır
  */
 public class Order {
     private OrderId id;
@@ -159,7 +159,7 @@ public class Order {
     }
 
     /**
-     * Factory method for creating new orders
+     * Yeni sipariş oluşturmak için factory method
      */
     public static Order placeOrder(
         CustomerId customerId,
@@ -195,7 +195,7 @@ public class Order {
     }
 
     /**
-     * Confirm order after payment and inventory verification
+     * Ödeme ve envanter doğrulamasından sonra siparişi onayla
      */
     public void confirm(PaymentConfirmation paymentConfirmation,
                        InventoryConfirmation inventoryConfirmation) {
@@ -219,7 +219,7 @@ public class Order {
     }
 
     /**
-     * Cancel order with business rule validation
+     * İş kuralı doğrulaması ile siparişi iptal et
      */
     public OrderCancellationResult cancel(CancellationReason reason, String requestedBy) {
         OrderCancellationPolicy cancellationPolicy = orderPolicy.getCancellationPolicy();
@@ -251,7 +251,7 @@ public class Order {
     }
 
     /**
-     * Add item to order (only in PENDING status)
+     * Siparişe ürün ekle (sadece PENDING durumunda)
      */
     public void addItem(OrderItem newItem) {
         if (status != OrderStatus.PENDING) {
@@ -284,7 +284,7 @@ public class Order {
     }
 
     /**
-     * Remove item from order
+     * Siparişten ürün çıkar
      */
     public void removeItem(ProductId productId) {
         if (status != OrderStatus.PENDING) {
