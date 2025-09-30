@@ -78,6 +78,24 @@ app:
       order-confirmed: orders.confirmed
       order-cancelled: orders.cancelled
 
+# Outbox Pattern Configuration
+outbox:
+  enabled: true
+  batch-size: 50
+  max-retries: 3
+  retry-batch-size: 20
+  retry-enabled: true
+  retry-delay: PT5M # 5 minutes
+  cleanup-enabled: true
+  cleanup-age: P7D # 7 days
+  publish-timeout: PT30S # 30 seconds
+  processing:
+    interval: 5000 # 5 seconds
+  retry:
+    interval: 30000 # 30 seconds
+  cleanup:
+    schedule: "0 0 * * * *" # Every hour
+
 ---
 # Docker Profile
 spring:

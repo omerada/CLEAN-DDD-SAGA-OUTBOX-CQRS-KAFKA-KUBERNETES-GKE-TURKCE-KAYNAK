@@ -4,9 +4,17 @@ import com.example.order.application.port.in.*;
 import com.example.order.application.port.out.*;
 import com.example.order.domain.entity.Order;
 import com.example.order.domain.entity.OrderItem;
+import com.example.order.domain.outbox.OutboxEvent;
+import com.example.order.domain.outbox.EventMetadata;
+import com.example.order.domain.event.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Order Application Service
@@ -14,7 +22,7 @@ import java.util.List;
  * Orchestrates business use cases by:
  * - Coordinating between domain and infrastructure
  * - Managing transactions
- * - Publishing domain events
+ * - Publishing domain events via Outbox Pattern
  * - Handling cross-cutting concerns
  */
 @Service
@@ -23,35 +31,46 @@ public class OrderApplicationService implements
         CreateOrderUseCase,
         GetOrderUseCase {
 
-    private final OrderRepositoryPort orderRepository;
-    // private final EventPublisher eventPublisher; // TODO: Implement later
+    private static final Logger log = LoggerFactory.getLogger(OrderApplicationService.class);
 
-    public OrderApplicationService(OrderRepositoryPort orderRepository) {
+    private final OrderRepositoryPort orderRepository;
+    private final OutboxRepositoryPort outboxRepository;
+
+    public OrderApplicationService(
+            OrderRepositoryPort orderRepository,
+            OutboxRepositoryPort outboxRepository) {
         this.orderRepository = orderRepository;
-        // this.eventPublisher = eventPublisher; // TODO: Implement later
+        this.outboxRepository = outboxRepository;
     }
 
     @Override
     public CreateOrderResponse createOrder(CreateOrderCommand command) {
-        // 1. Convert command to domain objects
-        List<OrderItem> orderItems = command.items().stream()
-                .map(this::toDomainOrderItem)
-                .toList();
+        try {
+            log.info("Creating order for customer: {}", command.customerId().getValue());
 
-        // 2. Create domain aggregate using business logic
-        Order order = Order.create(command.customerId(), orderItems);
+            // 1. Convert command to domain objects
+            List<OrderItem> orderItems = command.items().stream()
+                    .map(this::toDomainOrderItem)
+                    .toList();
 
-        // 3. Persist aggregate
-        orderRepository.save(order);
+            // 2. Create domain aggregate using business logic
+            Order order = Order.create(command.customerId(), orderItems);
 
-        // 4. TODO: Publish domain events (outbox pattern can be applied here)
-        // publishDomainEvents(order);
+            // 3. Persist aggregate - ATOMIC TRANSACTION START
+            orderRepository.save(order);
 
-        // 5. TODO: Clear events to prevent re-publishing
-        // order.clearDomainEvents();
+            // 4. Create outbox events - SAME TRANSACTION
+            createOutboxEventsForOrderCreation(order);
 
-        // 6. Return response
-        return CreateOrderResponse.from(order);
+            log.info("Order created successfully with outbox events: {}", order.getId().getValue());
+
+            // 5. Return response
+            return CreateOrderResponse.from(order);
+
+        } catch (Exception e) {
+            log.error("Failed to create order for customer: {}", command.customerId().getValue(), e);
+            throw new RuntimeException("Order creation failed", e);
+        }
     }
 
     @Override
@@ -104,9 +123,31 @@ public class OrderApplicationService implements
                 itemCommand.unitPrice());
     }
 
-    // TODO: Implement event publishing
-    // private void publishDomainEvents(Order order) {
-    // List<Object> domainEvents = order.getDomainEvents();
-    // domainEvents.forEach(eventPublisher::publishDomainEvent);
-    // }
+    /**
+     * Create outbox events for order creation
+     */
+    private void createOutboxEventsForOrderCreation(Order order) {
+        // Create correlation ID for event tracking
+        String correlationId = UUID.randomUUID().toString();
+        EventMetadata metadata = EventMetadata.create(correlationId, "order-service");
+
+        // Create Order Created Event
+        OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent(
+                order.getId(),
+                order.getCustomerId(),
+                order.getTotalAmount(),
+                order.getItems().size(),
+                LocalDateTime.now());
+
+        OutboxEvent orderCreatedOutboxEvent = OutboxEvent.create(
+                "Order",
+                order.getId().getValue(),
+                "OrderCreated",
+                orderCreatedEvent,
+                metadata);
+
+        outboxRepository.save(orderCreatedOutboxEvent);
+
+        log.debug("Created outbox event for OrderCreated: {}", order.getId().getValue());
+    }
 }

@@ -3,6 +3,7 @@ package com.example.order.infrastructure.configuration;
 import com.example.order.application.port.in.CreateOrderUseCase;
 import com.example.order.application.port.in.GetOrderUseCase;
 import com.example.order.application.port.out.OrderRepositoryPort;
+import com.example.order.application.port.out.OutboxRepositoryPort;
 import com.example.order.application.service.OrderApplicationService;
 
 import org.springframework.context.annotation.Bean;
@@ -30,11 +31,13 @@ public class CleanArchitectureConfiguration {
      * Application Service Bean
      * 
      * Implements both CreateOrderUseCase and GetOrderUseCase
-     * Depends on OrderRepositoryPort (to be provided by infrastructure)
+     * Depends on OrderRepositoryPort and OutboxRepositoryPort
      */
     @Bean
-    public OrderApplicationService orderApplicationService(OrderRepositoryPort orderRepositoryPort) {
-        return new OrderApplicationService(orderRepositoryPort);
+    public OrderApplicationService orderApplicationService(
+            OrderRepositoryPort orderRepositoryPort,
+            OutboxRepositoryPort outboxRepositoryPort) {
+        return new OrderApplicationService(orderRepositoryPort, outboxRepositoryPort);
     }
 
     /**

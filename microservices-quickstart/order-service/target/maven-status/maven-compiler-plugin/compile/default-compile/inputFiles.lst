@@ -9,7 +9,11 @@ C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microser
 C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\application\port\out\OrderRepository.java
 C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\infrastructure\configuration\CleanArchitectureConfiguration.java
 C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\application\service\OrderApplicationService.java
+C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\domain\outbox\OutboxEventStatus.java
+C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\infrastructure\adapter\out\persistence\OutboxRepositoryAdapter.java
 C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\infrastructure\adapter\out\persistence\OrderRepositoryAdapter.java
+C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\infrastructure\outbox\OutboxEventPublisher.java
+C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\infrastructure\outbox\OutboxRelayScheduler.java
 C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\infrastructure\adapter\in\web\dto\CreateOrderRequest.java
 C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\application\port\in\GetOrderUseCase.java
 C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\domain\valueobject\CustomerId.java
@@ -17,8 +21,13 @@ C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microser
 C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\domain\valueobject\OrderStatus.java
 C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\infrastructure\adapter\out\persistence\OrderPersistenceMapper.java
 C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\application\port\out\OrderRepositoryPort.java
+C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\domain\outbox\OutboxEvent.java
 C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\domain\valueobject\OrderId.java
+C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\domain\outbox\EventMetadata.java
+C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\infrastructure\adapter\out\persistence\OutboxEventJpaRepository.java
 C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\infrastructure\adapter\in\web\dto\OrderResponse.java
+C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\application\port\out\OutboxRepositoryPort.java
+C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\infrastructure\outbox\OutboxConfiguration.java
 C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\infrastructure\adapter\out\persistence\entity\OrderJpaEntity.java
 C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\domain\entity\Order.java
 C:\Users\o-oada\Desktop\CLEAN-DDD-SAGA-OUTBOX-CQRS-KAFKA-KUBERNETES-GKE\microservices-quickstart\order-service\src\main\java\com\example\order\infrastructure\adapter\out\persistence\entity\OrderItemJpaEntity.java
