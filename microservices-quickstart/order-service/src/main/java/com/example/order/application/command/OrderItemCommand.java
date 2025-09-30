@@ -12,11 +12,10 @@ import java.math.BigDecimal;
  * CQRS Command object for order item data
  */
 public record OrderItemCommand(
-    String productId,
-    Integer quantity,
-    BigDecimal unitPrice
-) {
-    
+        String productId,
+        Integer quantity,
+        BigDecimal unitPrice) {
+
     public OrderItemCommand {
         if (productId == null || productId.isBlank()) {
             throw new IllegalArgumentException("Product ID is required");
@@ -28,15 +27,14 @@ public record OrderItemCommand(
             throw new IllegalArgumentException("Unit price must be positive");
         }
     }
-    
+
     /**
      * Convert to domain entity
      */
     public OrderItem toDomainEntity() {
         return OrderItem.create(
-            ProductId.of(productId),
-            quantity,
-            Money.of(unitPrice)
-        );
+                ProductId.of(productId),
+                quantity,
+                Money.of(unitPrice));
     }
 }

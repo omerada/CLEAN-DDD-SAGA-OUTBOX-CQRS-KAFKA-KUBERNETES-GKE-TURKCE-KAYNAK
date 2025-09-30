@@ -17,45 +17,44 @@ import java.util.List;
  */
 @Repository
 public interface OrderListViewRepository extends JpaRepository<OrderListView, String> {
-    
+
     /**
      * Find orders by customer ID with pagination
      */
     Page<OrderListView> findByCustomerId(String customerId, Pageable pageable);
-    
+
     /**
      * Find orders by customer ID and status
      */
     Page<OrderListView> findByCustomerIdAndStatus(
-        String customerId, 
-        String status, 
-        Pageable pageable
-    );
-    
+            String customerId,
+            String status,
+            Pageable pageable);
+
     /**
      * Find orders by status
      */
     Page<OrderListView> findByStatus(String status, Pageable pageable);
-    
+
     /**
      * Find active orders for customer (not cancelled or delivered)
      */
     @Query("SELECT o FROM OrderListView o WHERE o.customerId = :customerId " +
-           "AND o.status NOT IN ('CANCELLED', 'DELIVERED') " +
-           "ORDER BY o.createdAt DESC")
+            "AND o.status NOT IN ('CANCELLED', 'DELIVERED') " +
+            "ORDER BY o.createdAt DESC")
     List<OrderListView> findActiveOrdersByCustomerId(@Param("customerId") String customerId);
-    
+
     /**
      * Find recent orders with limit
      */
     @Query("SELECT o FROM OrderListView o ORDER BY o.createdAt DESC")
     List<OrderListView> findRecentOrders(Pageable pageable);
-    
+
     /**
      * Count orders by status
      */
     long countByStatus(String status);
-    
+
     /**
      * Count orders by customer
      */

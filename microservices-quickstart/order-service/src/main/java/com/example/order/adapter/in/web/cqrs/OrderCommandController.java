@@ -25,61 +25,58 @@ import java.util.List;
 @RequestMapping("/api/orders/commands")
 @CrossOrigin(origins = "*")
 public class OrderCommandController {
-    
+
     private static final Logger log = LoggerFactory.getLogger(OrderCommandController.class);
-    
+
     private final OrderCommandHandler commandHandler;
-    
+
     public OrderCommandController(OrderCommandHandler commandHandler) {
         this.commandHandler = commandHandler;
     }
-    
+
     /**
      * Create new order - CQRS Command
      */
     @PostMapping
     public ResponseEntity<CreateOrderResponse> createOrder(
             @Valid @RequestBody CreateOrderRequest request) {
-        
+
         try {
             log.info("Received create order command for customer: {}", request.customerId());
-            
+
             // Convert request to command
             CreateOrderCommand command = new CreateOrderCommand(
-                CustomerId.of(request.customerId()),
-                request.items().stream()
-                    .map(item -> new OrderItemCommand(
-                        item.productId(),
-                        item.quantity(),
-                        item.unitPrice()
-                    ))
-                    .toList()
-            );
-            
+                    CustomerId.of(request.customerId()),
+                    request.items().stream()
+                            .map(item -> new OrderItemCommand(
+                                    item.productId(),
+                                    item.quantity(),
+                                    item.unitPrice()))
+                            .toList());
+
             // Execute command
             CreateOrderResult result = commandHandler.handle(command);
-            
+
             if (result.isSuccess()) {
                 CreateOrderResponse response = new CreateOrderResponse(
-                    result.getOrderId().getValue(),
-                    "Order created successfully"
-                );
-                
+                        result.getOrderId().getValue(),
+                        "Order created successfully");
+
                 log.info("Order created successfully: {}", result.getOrderId().getValue());
-                
+
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
             } else {
                 log.warn("Order creation failed: {}", result.getErrorMessage());
-                
+
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new CreateOrderResponse(null, result.getErrorMessage()));
+                        .body(new CreateOrderResponse(null, result.getErrorMessage()));
             }
-            
+
         } catch (Exception e) {
             log.error("Error processing create order command", e);
-            
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new CreateOrderResponse(null, "Internal server error"));
+                    .body(new CreateOrderResponse(null, "Internal server error"));
         }
     }
 }
@@ -88,23 +85,23 @@ public class OrderCommandController {
  * Create Order Request DTO
  */
 record CreateOrderRequest(
-    String customerId,
-    List<OrderItemRequest> items
-) {}
+        String customerId,
+        List<OrderItemRequest> items) {
+}
 
 /**
  * Order Item Request DTO
  */
 record OrderItemRequest(
-    String productId,
-    Integer quantity,
-    BigDecimal unitPrice
-) {}
+        String productId,
+        Integer quantity,
+        BigDecimal unitPrice) {
+}
 
 /**
  * Create Order Response DTO
  */
 record CreateOrderResponse(
-    String orderId,
-    String message
-) {}
+        String orderId,
+        String message) {
+}

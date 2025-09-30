@@ -42,7 +42,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
     public Order save(Order order) {
         OrderJpaEntity jpaEntity = mapper.toJpaEntity(order);
         OrderJpaEntity savedEntity = jpaRepository.save(jpaEntity);
-        
+
         // Convert back to domain model
         return mapper.toDomainEntity(savedEntity);
     }
