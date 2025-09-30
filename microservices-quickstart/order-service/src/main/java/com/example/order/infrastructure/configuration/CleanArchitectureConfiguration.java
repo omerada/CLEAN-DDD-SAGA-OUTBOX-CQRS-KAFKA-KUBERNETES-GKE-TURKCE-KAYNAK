@@ -59,7 +59,7 @@ public class CleanArchitectureConfiguration {
         return orderApplicationService;
     }
 
-    // Note: OrderRepositoryPort implementation (OrderRepositoryAdapter) 
+    // Note: OrderRepositoryPort implementation (OrderRepositoryAdapter)
     // is automatically detected by Spring through @Component annotation
     // and will be injected where OrderRepositoryPort is required
 }

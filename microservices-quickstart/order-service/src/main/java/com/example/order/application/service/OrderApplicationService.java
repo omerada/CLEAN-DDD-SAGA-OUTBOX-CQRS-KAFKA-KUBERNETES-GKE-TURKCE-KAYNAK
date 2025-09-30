@@ -19,9 +19,9 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class OrderApplicationService implements 
-    CreateOrderUseCase,
-    GetOrderUseCase {
+public class OrderApplicationService implements
+        CreateOrderUseCase,
+        GetOrderUseCase {
 
     private final OrderRepositoryPort orderRepository;
     // private final EventPublisher eventPublisher; // TODO: Implement later
@@ -35,8 +35,8 @@ public class OrderApplicationService implements
     public CreateOrderResponse createOrder(CreateOrderCommand command) {
         // 1. Convert command to domain objects
         List<OrderItem> orderItems = command.items().stream()
-            .map(this::toDomainOrderItem)
-            .toList();
+                .map(this::toDomainOrderItem)
+                .toList();
 
         // 2. Create domain aggregate using business logic
         Order order = Order.create(command.customerId(), orderItems);
@@ -58,8 +58,8 @@ public class OrderApplicationService implements
     @Transactional(readOnly = true)
     public GetOrderResponse getOrder(GetOrderQuery query) {
         Order order = orderRepository.findById(query.orderId())
-            .orElse(null);
-            
+                .orElse(null);
+
         if (order == null) {
             return null; // Let controller handle 404
         }
@@ -71,17 +71,17 @@ public class OrderApplicationService implements
     @Transactional(readOnly = true)
     public List<GetOrderResponse> getOrdersByCustomer(GetOrdersByCustomerQuery query) {
         List<Order> orders = orderRepository.findByCustomerId(query.customerId());
-        
+
         return orders.stream()
-            .map(GetOrderResponse::from)
-            .toList();
+                .map(GetOrderResponse::from)
+                .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<GetOrderResponse> getAllOrders(GetAllOrdersQuery query) {
         List<Order> orders;
-        
+
         if (query.statusFilter() != null) {
             orders = orderRepository.findByStatus(query.statusFilter());
         } else {
@@ -90,8 +90,8 @@ public class OrderApplicationService implements
         }
 
         return orders.stream()
-            .map(GetOrderResponse::from)
-            .toList();
+                .map(GetOrderResponse::from)
+                .toList();
     }
 
     /**
@@ -99,15 +99,14 @@ public class OrderApplicationService implements
      */
     private OrderItem toDomainOrderItem(OrderItemCommand itemCommand) {
         return OrderItem.create(
-            itemCommand.productId(),
-            itemCommand.quantity(),
-            itemCommand.unitPrice()
-        );
+                itemCommand.productId(),
+                itemCommand.quantity(),
+                itemCommand.unitPrice());
     }
 
     // TODO: Implement event publishing
     // private void publishDomainEvents(Order order) {
-    //     List<Object> domainEvents = order.getDomainEvents();
-    //     domainEvents.forEach(eventPublisher::publishDomainEvent);
+    // List<Object> domainEvents = order.getDomainEvents();
+    // domainEvents.forEach(eventPublisher::publishDomainEvent);
     // }
 }

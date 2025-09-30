@@ -14,9 +14,9 @@ import java.util.List;
 public interface GetOrderUseCase {
 
     GetOrderResponse getOrder(GetOrderQuery query);
-    
+
     List<GetOrderResponse> getOrdersByCustomer(GetOrdersByCustomerQuery query);
-    
+
     List<GetOrderResponse> getAllOrders(GetAllOrdersQuery query);
 
     /**
@@ -45,10 +45,9 @@ public interface GetOrderUseCase {
      * Query for all orders (with pagination support)
      */
     record GetAllOrdersQuery(
-        int page,
-        int size,
-        OrderStatus statusFilter
-    ) {
+            int page,
+            int size,
+            OrderStatus statusFilter) {
         public GetAllOrdersQuery {
             if (page < 0) {
                 throw new IllegalArgumentException("Page cannot be negative");
@@ -68,47 +67,43 @@ public interface GetOrderUseCase {
      * Response for order queries
      */
     record GetOrderResponse(
-        OrderId orderId,
-        CustomerId customerId,
-        OrderStatus status,
-        Money totalAmount,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt,
-        List<OrderItemResponse> items
-    ) {
+            OrderId orderId,
+            CustomerId customerId,
+            OrderStatus status,
+            Money totalAmount,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt,
+            List<OrderItemResponse> items) {
         /**
          * Order item response for queries
          */
         public record OrderItemResponse(
-            ProductId productId,
-            int quantity,
-            Money unitPrice,
-            Money subtotal
-        ) {
+                ProductId productId,
+                int quantity,
+                Money unitPrice,
+                Money subtotal) {
             public static OrderItemResponse from(OrderItem orderItem) {
                 return new OrderItemResponse(
-                    orderItem.getProductId(),
-                    orderItem.getQuantity(),
-                    orderItem.getUnitPrice(),
-                    orderItem.getSubtotal()
-                );
+                        orderItem.getProductId(),
+                        orderItem.getQuantity(),
+                        orderItem.getUnitPrice(),
+                        orderItem.getSubtotal());
             }
         }
 
         public static GetOrderResponse from(com.example.order.domain.entity.Order order) {
             List<OrderItemResponse> itemResponses = order.getItems().stream()
-                .map(OrderItemResponse::from)
-                .toList();
+                    .map(OrderItemResponse::from)
+                    .toList();
 
             return new GetOrderResponse(
-                order.getId(),
-                order.getCustomerId(),
-                order.getStatus(),
-                order.getTotalAmount(),
-                order.getCreatedAt(),
-                order.getUpdatedAt(),
-                itemResponses
-            );
+                    order.getId(),
+                    order.getCustomerId(),
+                    order.getStatus(),
+                    order.getTotalAmount(),
+                    order.getCreatedAt(),
+                    order.getUpdatedAt(),
+                    itemResponses);
         }
     }
 }

@@ -36,8 +36,10 @@ public class OrderId {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         OrderId orderId = (OrderId) o;
         return Objects.equals(value, orderId.value);
     }

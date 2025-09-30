@@ -35,11 +35,12 @@ public class OrderItemJpaEntity {
     private OrderJpaEntity order;
 
     // Default constructor for JPA
-    protected OrderItemJpaEntity() {}
+    protected OrderItemJpaEntity() {
+    }
 
     // Constructor
-    public OrderItemJpaEntity(String productId, Integer quantity, 
-                             BigDecimal unitPrice, BigDecimal subtotal) {
+    public OrderItemJpaEntity(String productId, Integer quantity,
+            BigDecimal unitPrice, BigDecimal subtotal) {
         this.productId = productId;
         this.quantity = quantity;
         this.unitPrice = unitPrice;

@@ -16,8 +16,8 @@ public class OrderConfirmedEvent {
     private final Money totalAmount;
     private final LocalDateTime occurredOn;
 
-    public OrderConfirmedEvent(OrderId orderId, CustomerId customerId, 
-                             Money totalAmount, LocalDateTime occurredOn) {
+    public OrderConfirmedEvent(OrderId orderId, CustomerId customerId,
+            Money totalAmount, LocalDateTime occurredOn) {
         this.orderId = Objects.requireNonNull(orderId, "Order ID cannot be null");
         this.customerId = Objects.requireNonNull(customerId, "Customer ID cannot be null");
         this.totalAmount = Objects.requireNonNull(totalAmount, "Total amount cannot be null");
@@ -42,13 +42,15 @@ public class OrderConfirmedEvent {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         OrderConfirmedEvent that = (OrderConfirmedEvent) o;
         return Objects.equals(orderId, that.orderId) &&
-               Objects.equals(customerId, that.customerId) &&
-               Objects.equals(totalAmount, that.totalAmount) &&
-               Objects.equals(occurredOn, that.occurredOn);
+                Objects.equals(customerId, that.customerId) &&
+                Objects.equals(totalAmount, that.totalAmount) &&
+                Objects.equals(occurredOn, that.occurredOn);
     }
 
     @Override

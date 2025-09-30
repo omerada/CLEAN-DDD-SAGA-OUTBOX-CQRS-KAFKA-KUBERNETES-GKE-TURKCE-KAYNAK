@@ -16,8 +16,8 @@ public class OrderCancelledEvent {
     private final String reason;
     private final LocalDateTime occurredOn;
 
-    public OrderCancelledEvent(OrderId orderId, CustomerId customerId, 
-                             String reason, LocalDateTime occurredOn) {
+    public OrderCancelledEvent(OrderId orderId, CustomerId customerId,
+            String reason, LocalDateTime occurredOn) {
         this.orderId = Objects.requireNonNull(orderId, "Order ID cannot be null");
         this.customerId = Objects.requireNonNull(customerId, "Customer ID cannot be null");
         this.reason = reason != null ? reason : "No reason provided";
@@ -42,13 +42,15 @@ public class OrderCancelledEvent {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         OrderCancelledEvent that = (OrderCancelledEvent) o;
         return Objects.equals(orderId, that.orderId) &&
-               Objects.equals(customerId, that.customerId) &&
-               Objects.equals(reason, that.reason) &&
-               Objects.equals(occurredOn, that.occurredOn);
+                Objects.equals(customerId, that.customerId) &&
+                Objects.equals(reason, that.reason) &&
+                Objects.equals(occurredOn, that.occurredOn);
     }
 
     @Override

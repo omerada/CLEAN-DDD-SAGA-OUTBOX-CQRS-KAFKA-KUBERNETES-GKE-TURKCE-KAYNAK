@@ -34,8 +34,8 @@ public class OrderController {
     private final CreateOrderUseCase createOrderUseCase;
     private final GetOrderUseCase getOrderUseCase;
 
-    public OrderController(CreateOrderUseCase createOrderUseCase, 
-                          GetOrderUseCase getOrderUseCase) {
+    public OrderController(CreateOrderUseCase createOrderUseCase,
+            GetOrderUseCase getOrderUseCase) {
         this.createOrderUseCase = createOrderUseCase;
         this.getOrderUseCase = getOrderUseCase;
     }
@@ -51,30 +51,28 @@ public class OrderController {
         try {
             // Convert web request to domain command
             CreateOrderUseCase.CreateOrderCommand command = request.toDomainCommand();
-            
+
             // Execute use case
             CreateOrderUseCase.CreateOrderResponse useCaseResponse = createOrderUseCase.createOrder(command);
-            
+
             // Convert use case response to web response
             OrderResponse response = new OrderResponse(
-                useCaseResponse.orderId().getValue(),
-                useCaseResponse.customerId().getValue(),
-                useCaseResponse.status().name(),
-                useCaseResponse.totalAmount().getAmount().doubleValue(),
-                useCaseResponse.createdAt(),
-                useCaseResponse.createdAt(), // updatedAt same as createdAt for new orders
-                useCaseResponse.items().stream()
-                    .map(item -> new OrderResponse.OrderItemResponse(
-                        item.productId().getValue(),
-                        item.quantity(),
-                        item.unitPrice().getAmount().doubleValue(),
-                        item.subtotal().getAmount().doubleValue()
-                    ))
-                    .toList()
-            );
-            
+                    useCaseResponse.orderId().getValue(),
+                    useCaseResponse.customerId().getValue(),
+                    useCaseResponse.status().name(),
+                    useCaseResponse.totalAmount().getAmount().doubleValue(),
+                    useCaseResponse.createdAt(),
+                    useCaseResponse.createdAt(), // updatedAt same as createdAt for new orders
+                    useCaseResponse.items().stream()
+                            .map(item -> new OrderResponse.OrderItemResponse(
+                                    item.productId().getValue(),
+                                    item.quantity(),
+                                    item.unitPrice().getAmount().doubleValue(),
+                                    item.subtotal().getAmount().doubleValue()))
+                            .toList());
+
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
-            
+
         } catch (IllegalArgumentException e) {
             // Domain validation errors
             return ResponseEntity.badRequest().build();
@@ -92,41 +90,37 @@ public class OrderController {
      */
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderResponse> getOrder(
-            @PathVariable 
-            @Pattern(regexp = "ORD-\\w+", message = "Order ID must follow format: ORD-XXX") 
-            String orderId) {
+            @PathVariable @Pattern(regexp = "ORD-\\w+", message = "Order ID must follow format: ORD-XXX") String orderId) {
         try {
             // Convert web parameter to domain query
             OrderId orderIdVO = OrderId.of(orderId);
             GetOrderUseCase.GetOrderQuery query = new GetOrderUseCase.GetOrderQuery(orderIdVO);
-            
+
             // Execute use case
             GetOrderUseCase.GetOrderResponse useCaseResponse = getOrderUseCase.getOrder(query);
-            
+
             if (useCaseResponse == null) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             // Convert use case response to web response
             OrderResponse response = new OrderResponse(
-                useCaseResponse.orderId().getValue(),
-                useCaseResponse.customerId().getValue(),
-                useCaseResponse.status().name(),
-                useCaseResponse.totalAmount().getAmount().doubleValue(),
-                useCaseResponse.createdAt(),
-                useCaseResponse.updatedAt(),
-                useCaseResponse.items().stream()
-                    .map(item -> new OrderResponse.OrderItemResponse(
-                        item.productId().getValue(),
-                        item.quantity(),
-                        item.unitPrice().getAmount().doubleValue(),
-                        item.subtotal().getAmount().doubleValue()
-                    ))
-                    .toList()
-            );
-            
+                    useCaseResponse.orderId().getValue(),
+                    useCaseResponse.customerId().getValue(),
+                    useCaseResponse.status().name(),
+                    useCaseResponse.totalAmount().getAmount().doubleValue(),
+                    useCaseResponse.createdAt(),
+                    useCaseResponse.updatedAt(),
+                    useCaseResponse.items().stream()
+                            .map(item -> new OrderResponse.OrderItemResponse(
+                                    item.productId().getValue(),
+                                    item.quantity(),
+                                    item.unitPrice().getAmount().doubleValue(),
+                                    item.subtotal().getAmount().doubleValue()))
+                            .toList());
+
             return ResponseEntity.ok().body(response);
-                
+
         } catch (IllegalArgumentException e) {
             // Invalid order ID format
             return ResponseEntity.badRequest().build();

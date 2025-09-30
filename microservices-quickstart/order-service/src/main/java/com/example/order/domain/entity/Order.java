@@ -48,18 +48,17 @@ public class Order {
      */
     public static Order create(CustomerId customerId, List<OrderItem> items) {
         validateOrderCreation(customerId, items);
-        
+
         OrderId orderId = OrderId.generate();
         Order order = new Order(orderId, customerId, items);
-        
+
         // Publish domain event
         order.addDomainEvent(new OrderCreatedEvent(
-            orderId,
-            customerId,
-            order.totalAmount,
-            order.getTotalItemsCount(),
-            order.createdAt
-        ));
+                orderId,
+                customerId,
+                order.totalAmount,
+                order.getTotalItemsCount(),
+                order.createdAt));
 
         return order;
     }
@@ -82,8 +81,7 @@ public class Order {
     public void confirm() {
         if (!status.canTransitionTo(OrderStatus.CONFIRMED)) {
             throw new IllegalStateException(
-                String.format("Cannot confirm order in %s status", status)
-            );
+                    String.format("Cannot confirm order in %s status", status));
         }
 
         this.status = OrderStatus.CONFIRMED;
@@ -91,11 +89,10 @@ public class Order {
 
         // Publish domain event
         addDomainEvent(new OrderConfirmedEvent(
-            this.id,
-            this.customerId,
-            this.totalAmount,
-            this.updatedAt
-        ));
+                this.id,
+                this.customerId,
+                this.totalAmount,
+                this.updatedAt));
     }
 
     /**
@@ -104,8 +101,7 @@ public class Order {
     public void cancel(String reason) {
         if (!status.isCancellable()) {
             throw new IllegalStateException(
-                String.format("Cannot cancel order in %s status", status)
-            );
+                    String.format("Cannot cancel order in %s status", status));
         }
 
         this.status = OrderStatus.CANCELLED;
@@ -113,11 +109,10 @@ public class Order {
 
         // Publish domain event
         addDomainEvent(new OrderCancelledEvent(
-            this.id,
-            this.customerId,
-            reason,
-            this.updatedAt
-        ));
+                this.id,
+                this.customerId,
+                reason,
+                this.updatedAt));
     }
 
     /**
@@ -126,8 +121,7 @@ public class Order {
     public void ship() {
         if (!status.canTransitionTo(OrderStatus.SHIPPED)) {
             throw new IllegalStateException(
-                String.format("Cannot ship order in %s status", status)
-            );
+                    String.format("Cannot ship order in %s status", status));
         }
 
         this.status = OrderStatus.SHIPPED;
@@ -142,8 +136,7 @@ public class Order {
     public void markAsDelivered() {
         if (!status.canTransitionTo(OrderStatus.DELIVERED)) {
             throw new IllegalStateException(
-                String.format("Cannot mark order as delivered in %s status", status)
-            );
+                    String.format("Cannot mark order as delivered in %s status", status));
         }
 
         this.status = OrderStatus.DELIVERED;
@@ -257,8 +250,10 @@ public class Order {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Order order = (Order) o;
         return Objects.equals(id, order.id);
     }

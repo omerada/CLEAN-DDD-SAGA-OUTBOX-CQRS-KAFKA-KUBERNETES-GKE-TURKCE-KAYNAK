@@ -47,11 +47,12 @@ public class OrderJpaEntity {
     }
 
     // Default constructor for JPA
-    protected OrderJpaEntity() {}
+    protected OrderJpaEntity() {
+    }
 
     // Constructor
-    public OrderJpaEntity(String orderId, String customerId, OrderStatusEnum status, 
-                         BigDecimal totalAmount, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public OrderJpaEntity(String orderId, String customerId, OrderStatusEnum status,
+            BigDecimal totalAmount, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.orderId = orderId;
         this.customerId = customerId;
         this.status = status;

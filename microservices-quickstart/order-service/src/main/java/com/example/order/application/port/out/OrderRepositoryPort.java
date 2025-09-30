@@ -35,7 +35,7 @@ public interface OrderRepositoryPort {
     /**
      * Find all orders for a specific customer
      * 
-     * @param customerId Customer identifier  
+     * @param customerId Customer identifier
      * @return List of customer orders
      */
     List<Order> findByCustomerId(CustomerId customerId);

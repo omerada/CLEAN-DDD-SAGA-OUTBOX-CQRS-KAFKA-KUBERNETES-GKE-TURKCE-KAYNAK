@@ -20,9 +20,8 @@ public interface CreateOrderUseCase {
      * Encapsulates all required data with validation
      */
     record CreateOrderCommand(
-        CustomerId customerId,
-        List<OrderItemCommand> items
-    ) {
+            CustomerId customerId,
+            List<OrderItemCommand> items) {
         public CreateOrderCommand {
             if (customerId == null) {
                 throw new IllegalArgumentException("Customer ID is required");
@@ -40,10 +39,9 @@ public interface CreateOrderUseCase {
      * Order item command for creation
      */
     record OrderItemCommand(
-        ProductId productId,
-        int quantity,
-        Money unitPrice
-    ) {
+            ProductId productId,
+            int quantity,
+            Money unitPrice) {
         public OrderItemCommand {
             if (productId == null) {
                 throw new IllegalArgumentException("Product ID is required");
@@ -64,47 +62,43 @@ public interface CreateOrderUseCase {
      * Response for order creation
      */
     record CreateOrderResponse(
-        OrderId orderId,
-        CustomerId customerId,
-        OrderStatus status,
-        Money totalAmount,
-        int totalItems,
-        LocalDateTime createdAt,
-        List<OrderItemResponse> items
-    ) {
+            OrderId orderId,
+            CustomerId customerId,
+            OrderStatus status,
+            Money totalAmount,
+            int totalItems,
+            LocalDateTime createdAt,
+            List<OrderItemResponse> items) {
         /**
          * Order item response
          */
         public record OrderItemResponse(
-            ProductId productId,
-            int quantity,
-            Money unitPrice,
-            Money subtotal
-        ) {
+                ProductId productId,
+                int quantity,
+                Money unitPrice,
+                Money subtotal) {
             public static OrderItemResponse from(OrderItem orderItem) {
                 return new OrderItemResponse(
-                    orderItem.getProductId(),
-                    orderItem.getQuantity(),
-                    orderItem.getUnitPrice(),
-                    orderItem.getSubtotal()
-                );
+                        orderItem.getProductId(),
+                        orderItem.getQuantity(),
+                        orderItem.getUnitPrice(),
+                        orderItem.getSubtotal());
             }
         }
 
         public static CreateOrderResponse from(com.example.order.domain.entity.Order order) {
             List<OrderItemResponse> itemResponses = order.getItems().stream()
-                .map(OrderItemResponse::from)
-                .toList();
+                    .map(OrderItemResponse::from)
+                    .toList();
 
             return new CreateOrderResponse(
-                order.getId(),
-                order.getCustomerId(),
-                order.getStatus(),
-                order.getTotalAmount(),
-                order.getItems().stream().mapToInt(OrderItem::getQuantity).sum(),
-                order.getCreatedAt(),
-                itemResponses
-            );
+                    order.getId(),
+                    order.getCustomerId(),
+                    order.getStatus(),
+                    order.getTotalAmount(),
+                    order.getItems().stream().mapToInt(OrderItem::getQuantity).sum(),
+                    order.getCreatedAt(),
+                    itemResponses);
         }
     }
 }

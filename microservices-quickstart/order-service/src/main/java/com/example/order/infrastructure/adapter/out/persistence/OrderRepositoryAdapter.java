@@ -32,8 +32,8 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
     private final OrderJpaRepository jpaRepository;
     private final OrderPersistenceMapper mapper;
 
-    public OrderRepositoryAdapter(OrderJpaRepository jpaRepository, 
-                                 OrderPersistenceMapper mapper) {
+    public OrderRepositoryAdapter(OrderJpaRepository jpaRepository,
+            OrderPersistenceMapper mapper) {
         this.jpaRepository = jpaRepository;
         this.mapper = mapper;
     }
@@ -42,7 +42,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
     public void save(Order order) {
         OrderJpaEntity jpaEntity = mapper.toJpaEntity(order);
         jpaRepository.save(jpaEntity);
-        
+
         // In a real implementation, we might need to update the domain object
         // with generated IDs or versions from the database
     }
@@ -51,16 +51,16 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
     @Transactional(readOnly = true)
     public Optional<Order> findById(OrderId orderId) {
         return jpaRepository.findByOrderIdWithItems(orderId.getValue())
-            .map(mapper::toDomainEntity);
+                .map(mapper::toDomainEntity);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Order> findByCustomerId(CustomerId customerId) {
         return jpaRepository.findByCustomerIdWithItems(customerId.getValue())
-            .stream()
-            .map(mapper::toDomainEntity)
-            .toList();
+                .stream()
+                .map(mapper::toDomainEntity)
+                .toList();
     }
 
     @Override
@@ -68,9 +68,9 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
     public List<Order> findByStatus(OrderStatus status) {
         OrderJpaEntity.OrderStatusEnum jpaStatus = mapStatusToJpa(status);
         return jpaRepository.findByStatusWithItems(jpaStatus)
-            .stream()
-            .map(mapper::toDomainEntity)
-            .toList();
+                .stream()
+                .map(mapper::toDomainEntity)
+                .toList();
     }
 
     @Override
@@ -94,9 +94,9 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
     @Transactional(readOnly = true)
     public List<Order> findAll() {
         return jpaRepository.findAll()
-            .stream()
-            .map(mapper::toDomainEntity)
-            .toList();
+                .stream()
+                .map(mapper::toDomainEntity)
+                .toList();
     }
 
     /**
@@ -110,7 +110,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
             case PENDING -> OrderJpaEntity.OrderStatusEnum.PENDING;
             case CONFIRMED -> OrderJpaEntity.OrderStatusEnum.CONFIRMED;
             case CANCELLED -> OrderJpaEntity.OrderStatusEnum.CANCELLED;
-            case SHIPPED, DELIVERED, FAILED -> 
+            case SHIPPED, DELIVERED, FAILED ->
                 throw new IllegalArgumentException("Status not supported in persistence: " + status);
         };
     }

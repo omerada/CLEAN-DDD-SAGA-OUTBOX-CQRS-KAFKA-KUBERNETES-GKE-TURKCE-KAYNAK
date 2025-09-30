@@ -19,7 +19,8 @@ public class OrderItem {
     private Money subtotal;
 
     // Private constructor for framework/persistence
-    private OrderItem() {}
+    private OrderItem() {
+    }
 
     private OrderItem(ProductId productId, int quantity, Money unitPrice) {
         this.productId = productId;
@@ -99,12 +100,14 @@ public class OrderItem {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         OrderItem orderItem = (OrderItem) o;
         return quantity == orderItem.quantity &&
-               Objects.equals(productId, orderItem.productId) &&
-               Objects.equals(unitPrice, orderItem.unitPrice);
+                Objects.equals(productId, orderItem.productId) &&
+                Objects.equals(unitPrice, orderItem.unitPrice);
     }
 
     @Override

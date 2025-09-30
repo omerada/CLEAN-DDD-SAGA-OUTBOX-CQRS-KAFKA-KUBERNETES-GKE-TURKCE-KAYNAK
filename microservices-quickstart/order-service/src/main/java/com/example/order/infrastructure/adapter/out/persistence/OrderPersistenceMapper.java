@@ -25,22 +25,21 @@ public class OrderPersistenceMapper {
      */
     public OrderJpaEntity toJpaEntity(Order order) {
         OrderJpaEntity.OrderStatusEnum jpaStatus = mapStatusToJpa(order.getStatus());
-        
+
         OrderJpaEntity jpaEntity = new OrderJpaEntity(
-            order.getId().getValue(),
-            order.getCustomerId().getValue(),
-            jpaStatus,
-            order.getTotalAmount().getAmount(),
-            order.getCreatedAt(),
-            order.getUpdatedAt()
-        );
+                order.getId().getValue(),
+                order.getCustomerId().getValue(),
+                jpaStatus,
+                order.getTotalAmount().getAmount(),
+                order.getCreatedAt(),
+                order.getUpdatedAt());
 
         List<OrderItemJpaEntity> jpaItems = order.getItems().stream()
-            .map(this::toJpaEntity)
-            .collect(Collectors.toList());
-            
+                .map(this::toJpaEntity)
+                .collect(Collectors.toList());
+
         jpaEntity.setItems(jpaItems);
-        
+
         return jpaEntity;
     }
 
@@ -49,11 +48,10 @@ public class OrderPersistenceMapper {
      */
     private OrderItemJpaEntity toJpaEntity(OrderItem orderItem) {
         return new OrderItemJpaEntity(
-            orderItem.getProductId().getValue(),
-            orderItem.getQuantity(),
-            orderItem.getUnitPrice().getAmount(),
-            orderItem.getSubtotal().getAmount()
-        );
+                orderItem.getProductId().getValue(),
+                orderItem.getQuantity(),
+                orderItem.getUnitPrice().getAmount(),
+                orderItem.getSubtotal().getAmount());
     }
 
     /**
@@ -63,27 +61,28 @@ public class OrderPersistenceMapper {
         CustomerId customerId = CustomerId.of(jpaEntity.getCustomerId());
 
         List<OrderItem> domainItems = jpaEntity.getItems().stream()
-            .map(this::toDomainEntity)
-            .collect(Collectors.toList());
+                .map(this::toDomainEntity)
+                .collect(Collectors.toList());
 
-        // Create order through static factory method  
+        // Create order through static factory method
         Order order = Order.create(customerId, domainItems);
-        
-        // For persistence reconstitution, we need to use reflection or add reconstitution methods
+
+        // For persistence reconstitution, we need to use reflection or add
+        // reconstitution methods
         // For now, let's create a simple approach using the existing constructor
         try {
             java.lang.reflect.Field idField = Order.class.getDeclaredField("id");
             idField.setAccessible(true);
             idField.set(order, OrderId.of(jpaEntity.getOrderId()));
-            
+
             java.lang.reflect.Field createdAtField = Order.class.getDeclaredField("createdAt");
             createdAtField.setAccessible(true);
             createdAtField.set(order, jpaEntity.getCreatedAt());
-            
+
             java.lang.reflect.Field updatedAtField = Order.class.getDeclaredField("updatedAt");
             updatedAtField.setAccessible(true);
             updatedAtField.set(order, jpaEntity.getUpdatedAt());
-            
+
             // Handle status transitions
             OrderStatus targetStatus = mapStatusToDomain(jpaEntity.getStatus());
             if (targetStatus == OrderStatus.CONFIRMED) {
@@ -91,7 +90,7 @@ public class OrderPersistenceMapper {
             } else if (targetStatus == OrderStatus.CANCELLED) {
                 order.cancel("Restored from persistence");
             }
-            
+
         } catch (Exception e) {
             throw new RuntimeException("Failed to reconstitute Order from persistence", e);
         }
@@ -105,7 +104,7 @@ public class OrderPersistenceMapper {
     private OrderItem toDomainEntity(OrderItemJpaEntity jpaEntity) {
         ProductId productId = ProductId.of(jpaEntity.getProductId());
         Money unitPrice = Money.of(jpaEntity.getUnitPrice());
-        
+
         return OrderItem.create(productId, jpaEntity.getQuantity(), unitPrice);
     }
 
@@ -117,7 +116,7 @@ public class OrderPersistenceMapper {
             case PENDING -> OrderJpaEntity.OrderStatusEnum.PENDING;
             case CONFIRMED -> OrderJpaEntity.OrderStatusEnum.CONFIRMED;
             case CANCELLED -> OrderJpaEntity.OrderStatusEnum.CANCELLED;
-            case SHIPPED, DELIVERED, FAILED -> 
+            case SHIPPED, DELIVERED, FAILED ->
                 throw new IllegalArgumentException("Status not supported in persistence: " + domainStatus);
         };
     }
