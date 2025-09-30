@@ -96,6 +96,17 @@ outbox:
   cleanup:
     schedule: "0 0 * * * *" # Every hour
 
+# CQRS Configuration
+cqrs:
+  read-model:
+    enabled: true
+    projection:
+      enabled: true
+      async: true
+    cache:
+      enabled: true
+      ttl: PT10M # 10 minutes
+
 ---
 # Docker Profile
 spring:

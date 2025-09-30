@@ -21,8 +21,9 @@ public interface OrderRepositoryPort {
      * Save or update an order
      * 
      * @param order Order to persist
+     * @return Saved order with updated state
      */
-    void save(Order order);
+    Order save(Order order);
 
     /**
      * Find order by unique identifier

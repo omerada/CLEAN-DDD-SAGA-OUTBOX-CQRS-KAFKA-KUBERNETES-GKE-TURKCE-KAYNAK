@@ -3,7 +3,6 @@ package com.example.order.application.command;
 import com.example.order.domain.entity.OrderItem;
 import com.example.order.domain.valueobject.ProductId;
 import com.example.order.domain.valueobject.Money;
-import com.example.order.domain.valueobject.Quantity;
 
 import java.math.BigDecimal;
 
@@ -36,7 +35,7 @@ public record OrderItemCommand(
     public OrderItem toDomainEntity() {
         return OrderItem.create(
             ProductId.of(productId),
-            Quantity.of(quantity),
+            quantity,
             Money.of(unitPrice)
         );
     }
