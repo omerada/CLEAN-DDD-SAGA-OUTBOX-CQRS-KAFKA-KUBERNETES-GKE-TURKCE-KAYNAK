@@ -1,0 +1,90 @@
+# Inventory Service Configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: inventory-service
+
+  # Database Configuration
+  datasource:
+    url: jdbc:postgresql://localhost:5432/inventory_db
+    username: admin
+    password: admin123
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 20000
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 300000
+      max-lifetime: 1200000
+
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  # Kafka Configuration
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+    consumer:
+      group-id: inventory-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.type.mapping: "inventory-reserved:com.example.inventory.event.InventoryReservedEvent"
+
+# Management & Monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  health:
+    db:
+      enabled: true
+
+# Logging Configuration
+logging:
+  level:
+    com.example.inventory: DEBUG
+    org.springframework.kafka: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n"
+
+# Application Properties
+app:
+  kafka:
+    topics:
+      inventory-reserved: inventory.reserved
+      inventory-released: inventory.released
+      low-stock-alert: inventory.low-stock
+
+---
+# Docker Profile
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: jdbc:postgresql://postgres:5432/inventory_db
+  kafka:
+    bootstrap-servers: kafka:9092
