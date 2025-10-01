@@ -52,7 +52,8 @@ public class Inventory {
     @Transient
     private List<InventoryDomainEvent> domainEvents = new ArrayList<>();
 
-    protected Inventory() {} // JPA constructor
+    protected Inventory() {
+    } // JPA constructor
 
     private Inventory(ProductId productId, Quantity totalQuantity, Quantity minimumLevel) {
         this.id = InventoryId.generate().getValue();
@@ -249,8 +250,10 @@ public class Inventory {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Inventory inventory = (Inventory) o;
         return Objects.equals(id, inventory.id);
     }
@@ -286,9 +289,17 @@ public class Inventory {
             return new StockReservationResult(false, message, null);
         }
 
-        public boolean isSuccessful() { return successful; }
-        public String getMessage() { return message; }
-        public ReservationId getReservationId() { return reservationId; }
+        public boolean isSuccessful() {
+            return successful;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public ReservationId getReservationId() {
+            return reservationId;
+        }
     }
 
     public static class StockReleaseResult {
@@ -308,8 +319,13 @@ public class Inventory {
             return new StockReleaseResult(false, message);
         }
 
-        public boolean isSuccessful() { return successful; }
-        public String getMessage() { return message; }
+        public boolean isSuccessful() {
+            return successful;
+        }
+
+        public String getMessage() {
+            return message;
+        }
     }
 
     public static class StockAllocationResult {
@@ -329,8 +345,13 @@ public class Inventory {
             return new StockAllocationResult(false, message);
         }
 
-        public boolean isSuccessful() { return successful; }
-        public String getMessage() { return message; }
+        public boolean isSuccessful() {
+            return successful;
+        }
+
+        public String getMessage() {
+            return message;
+        }
     }
 
     public static class StockAdditionResult {
@@ -350,7 +371,12 @@ public class Inventory {
             return new StockAdditionResult(false, message);
         }
 
-        public boolean isSuccessful() { return successful; }
-        public String getMessage() { return message; }
+        public boolean isSuccessful() {
+            return successful;
+        }
+
+        public String getMessage() {
+            return message;
+        }
     }
 }

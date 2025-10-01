@@ -112,7 +112,8 @@ public class InventoryApplicationService implements
             }
 
             // Reserve stock in inventory
-            var reservationResult = inventory.reserveStock(quantity, OrderId.of(orderId), LocalDateTime.now().plusMinutes(30));
+            var reservationResult = inventory.reserveStock(quantity, OrderId.of(orderId),
+                    LocalDateTime.now().plusMinutes(30));
 
             // Create reservation record
             StockReservation reservation = StockReservation.create(
